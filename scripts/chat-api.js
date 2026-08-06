@@ -1,4 +1,3 @@
-const API_KEY = "nothing";
 const MODEL_NAME = "openai/gpt-oss-20b";
 
 let messages = [
@@ -24,15 +23,13 @@ async function SendMessage() {
 
         messages.push({ role: "user", content: userText });
 
-        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        const res = await fetch("http://localhost:3000/api/chat", {
             method: 'POST',
             headers: {
-                "Authorization": `Bearer ${API_KEY}`,
                 "Content-Type": 'application/json',
             },
             body: JSON.stringify({
-                model: MODEL_NAME,
-                messages: messages,
+                messages: messages
             }),
         });
 
@@ -43,7 +40,7 @@ async function SendMessage() {
         if (data.choices && data.choices[0]) {
             const aiRes = data.choices[0].message.content;
             const resPara = document.createElement("p");
-            resPara.innerHTML = `gpt-oss-20b: ${aiRes}`;
+            resPara.innerHTML = `${MODEL_NAME}: ${aiRes}`;
             chatbox.appendChild(resPara);
             messages.push({ role: "assistant", content: aiRes });
         } else {
