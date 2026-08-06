@@ -23,7 +23,7 @@ async function SendMessage() {
 
         messages.push({ role: "user", content: userText });
 
-        const res = await fetch("https://s-a-f-e-ai.onrender.com", {
+        const res = await fetch("https://s-a-f-e-ai.onrender.com/api/chat", {
             method: 'POST',
             headers: {
                 "Content-Type": 'application/json',
