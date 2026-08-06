@@ -1,7 +1,6 @@
-const MODEL_NAME = "openai/gpt-oss-20b";
-
+let tokensUsed = 0;
 let messages = [
-    { role: "system", content: "When necessary, respond using HTML only. Do not use Markdown. Use <p>, <ul>, <li>, <strong>, etc." }
+    { role: "system", content: "When necessary, respond using HTML formatting. Do not use Markdown. Use <p>, <ul>, <li>, <strong>, etc." }
 ];
 
 async function SendMessage() {
@@ -23,6 +22,8 @@ async function SendMessage() {
 
         messages.push({ role: "user", content: userText });
 
+        //https://s-a-f-e-ai.onrender.com/api/chat
+        //http://localhost:3000/api/chat
         const res = await fetch("https://s-a-f-e-ai.onrender.com/api/chat", {
             method: 'POST',
             headers: {
@@ -35,12 +36,15 @@ async function SendMessage() {
 
         const data = await res.json();
         console.log(data);
+
+        tokensUsed += data.usage.total_tokens;
+        console.log(tokensUsed);
         chatbox.innerHTML = chatbox.innerHTML.replace(thinkText, '');
 
         if (data.choices && data.choices[0]) {
             const aiRes = data.choices[0].message.content;
             const resPara = document.createElement("p");
-            resPara.innerHTML = `${MODEL_NAME}: ${aiRes}`;
+            resPara.innerHTML = `${data.model}: ${aiRes}`;
             chatbox.appendChild(resPara);
             messages.push({ role: "assistant", content: aiRes });
         } else {
@@ -109,6 +113,7 @@ function DoDomSetup() {
         if (event.key == 'Enter') {
             if (!heldKeys.includes('Shift')) {
                 SendMessage();
+                userInput.blur();
             }
         }
     });
