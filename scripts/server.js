@@ -11,7 +11,7 @@ const API_KEY = process.env.API_KEY;
 const MODEL_NAME = "openai/gpt-oss-20b";
 const FALLBACK_MODEL_NAME = "openai/gpt-oss-120b";
 
-export const LimitType = Object.freeze({
+const LimitType = Object.freeze({
     UNKNOWN: "UNKNOWN",
     DAILY: "DAILY",
     BURST: "BURST"

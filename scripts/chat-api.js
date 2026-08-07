@@ -1,4 +1,8 @@
-import { LimitType } from "./server";
+const LimitType = Object.freeze({
+    UNKNOWN: "UNKNOWN",
+    DAILY: "DAILY",
+    BURST: "BURST"
+});
 let tokensUsed = 0;
 let messages = [
     { role: "system", content: "When necessary, respond using HTML formatting. Do not use Markdown. Use <p>, <ul>, <li>, <strong>, etc." }
