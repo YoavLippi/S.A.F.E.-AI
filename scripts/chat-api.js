@@ -29,7 +29,7 @@ async function SendMessage() {
 
         //https://s-a-f-e-ai.onrender.com/api/chat
         //http://localhost:3000/api/chat
-        const res = await fetch("https://s-a-f-e-ai.onrender.com/api/chat", {
+        let res = await fetch("https://s-a-f-e-ai.onrender.com/api/chat", {
             method: 'POST',
             headers: {
                 "Content-Type": 'application/json',
@@ -48,7 +48,7 @@ async function SendMessage() {
                     //TODO: Change this to an error popup somewhere else
                     chatbox.innerHTML += `<p>Raah rate limited again</p>`;
 
-                    if (errorData.LimitType && errorData.LimitType == LimitType.DAILY) {
+                    if (errorData.type && errorData.type == LimitType.DAILY) {
                         //fallback now
                         res = await fetch("https://s-a-f-e-ai.onrender.com/api/chat", {
                             method: 'POST',
@@ -87,7 +87,6 @@ async function SendMessage() {
         } else {
             switch (res.status) {
                 case 429:
-                    console.warn(`rate limited by: ${errorData.type}`);
                     //TODO: Change this to an error popup somewhere else
                     chatbox.innerHTML += `<p>Raah rate limited again</p>`;
                     messages.pop();
@@ -134,7 +133,7 @@ function SaveToTxt(text, filename) {
 }
 
 if (document.readyState == "loading") {
-    document.addEventListener("DOMContentLoaded", DoDomSetup());
+    document.addEventListener("DOMContentLoaded", ()=>DoDomSetup());
 } else {
     DoDomSetup();
 }
