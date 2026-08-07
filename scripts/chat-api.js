@@ -5,7 +5,7 @@ const LimitType = Object.freeze({
 });
 let tokensUsed = 0;
 let messages = [
-    { role: "system", content: "When necessary, respond using HTML formatting. Do not use Markdown. Use <p>, <ul>, <li>, <strong>, etc." }
+    { role: "system", content: "When necessary, respond using HTML formatting. Do not use Markdown. Use <ul>, <li>, <strong>, etc. Do not add <p> elements unless required, rather use <br> etc." }
 ];
 
 async function SendMessage() {
@@ -16,14 +16,24 @@ async function SendMessage() {
     if (!userText) return;
     //showing user message
     const userPara = document.createElement("p");
+    userPara.classList.add("UserInput");
     userPara.textContent = `You: ${userText}`;
     chatbox.appendChild(userPara);
     inputField.value = "";
 
     try {
-        let thinkText = `Thinking...\n`;
+        const thinkPara = document.createElement('p');
+        thinkPara.innerText = 'Thinking...';
+
+        //let thinkText = `Thinking...\n`;
         //loading
-        chatbox.innerHTML += thinkText;
+        //chatbox.innerHTML += thinkText;
+        chatbox.appendChild(thinkPara);
+
+        //disabling relevant input areas
+        const sendButton = document.getElementById("sendButton");
+        sendButton.disabled = true;
+        inputField.disabled = true;
 
         messages.push({ role: "user", content: userText });
 
@@ -63,7 +73,7 @@ async function SendMessage() {
                     }
                     break;
                 default:
-                    console.error(data)
+                    console.error(errorData)
                     chatbox.innerHTML += `<p>Error: ${JSON.stringify(data)}</p>`;
                     messages.pop();
                     break;
@@ -76,11 +86,12 @@ async function SendMessage() {
 
         tokensUsed += data.usage.total_tokens;
         console.log(tokensUsed);
-        chatbox.innerHTML = chatbox.innerHTML.replace(thinkText, '');
+        chatbox.removeChild(thinkPara);
 
         if (data.choices && data.choices[0]) {
             const aiRes = data.choices[0].message.content;
             const resPara = document.createElement("p");
+            resPara.classList.add("AIResponse");
             resPara.innerHTML = `${data.model}: ${aiRes}`;
             chatbox.appendChild(resPara);
             messages.push({ role: "assistant", content: aiRes });
@@ -102,6 +113,9 @@ async function SendMessage() {
         chatbox.innerHTML += `<p>Network Error: ${error.message}</p>`;
     }
 
+    chatbox.scrollTop = chatbox.scrollHeight;
+    sendButton.disabled = false;
+    inputField.disabled = false;
 
     //console.log(messages);
 }
