@@ -1,12 +1,23 @@
+import MarkdownIt from "https://esm.run/markdown-it";
+
 const LimitType = Object.freeze({
     UNKNOWN: "UNKNOWN",
     DAILY: "DAILY",
     BURST: "BURST"
 });
+
 let tokensUsed = 0;
-let messages = [
-    { role: "system", content: "When necessary, respond using HTML formatting. Do not use Markdown. Use <ul>, <li>, <strong>, etc. Do not add <p> elements unless required, rather use <br> etc." }
+const baseMessages = [
+    { role: "system", content: "Respond using GitHub-flavored Markdown. Never output HTML." }
 ];
+let messages = baseMessages;
+
+const md = new MarkdownIt({
+    html:false,
+    breaks:true,
+    linkify:true,
+    typographer:true
+});
 
 async function SendMessage() {
     const inputField = document.getElementById("userInput");
@@ -92,7 +103,9 @@ async function SendMessage() {
             const aiRes = data.choices[0].message.content;
             const resPara = document.createElement("p");
             resPara.classList.add("AIResponse");
-            resPara.innerHTML = `${data.model}: ${aiRes}`;
+
+            const renderedOutput = md.render(aiRes);
+            resPara.innerHTML = `${data.model}: ${renderedOutput}`;
             chatbox.appendChild(resPara);
             messages.push({ role: "assistant", content: aiRes });
         } else {
@@ -123,9 +136,7 @@ async function SendMessage() {
 function ClearChat() {
     const chatbox = document.getElementById("chatbox");
     chatbox.innerHTML = "";
-    messages = [
-        { role: "system", content: "Respond using HTML only. Do not use Markdown. Use <p>, <ul>, <li>, <strong>, etc." }
-    ];
+    messages = baseMessages;
 }
 
 function SaveChat() {
