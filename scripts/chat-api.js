@@ -8,7 +8,7 @@ const LimitType = Object.freeze({
 
 let tokensUsed = 0;
 const baseMessages = [
-    { role: "system", content: "Respond using GitHub-flavored Markdown. Never output HTML." }
+    { role: "system", content: "Respond using GitHub-flavored Markdown. Never output HTML as a raw output." }
 ];
 let messages = baseMessages;
 
