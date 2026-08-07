@@ -1,3 +1,4 @@
+import { LimitType } from "./server";
 let tokensUsed = 0;
 let messages = [
     { role: "system", content: "When necessary, respond using HTML formatting. Do not use Markdown. Use <p>, <ul>, <li>, <strong>, etc." }
@@ -30,11 +31,43 @@ async function SendMessage() {
                 "Content-Type": 'application/json',
             },
             body: JSON.stringify({
-                messages: messages
+                messages: messages,
+                useFallback: false,
             }),
         });
 
+        if (!res.ok) {
+            const errorData = await res.json();
+            switch (res.status) {
+                case 429:
+                    console.warn(`rate limited by: ${errorData.type}`);
+                    //TODO: Change this to an error popup somewhere else
+                    chatbox.innerHTML += `<p>Raah rate limited again</p>`;
+
+                    if (errorData.LimitType && errorData.LimitType == LimitType.DAILY) {
+                        //fallback now
+                        res = await fetch("https://s-a-f-e-ai.onrender.com/api/chat", {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": 'application/json',
+                            },
+                            body: JSON.stringify({
+                                messages: messages,
+                                useFallback: true,
+                            }),
+                        });
+                    }
+                    break;
+                default:
+                    console.error(data)
+                    chatbox.innerHTML += `<p>Error: ${JSON.stringify(data)}</p>`;
+                    messages.pop();
+                    break;
+            }
+        }
+
         const data = await res.json();
+
         console.log(data);
 
         tokensUsed += data.usage.total_tokens;
@@ -48,16 +81,19 @@ async function SendMessage() {
             chatbox.appendChild(resPara);
             messages.push({ role: "assistant", content: aiRes });
         } else {
-            switch (data.error.code) {
+            switch (res.status) {
                 case 429:
-                    console.error(data);
+                    console.warn(`rate limited by: ${errorData.type}`);
+                    //TODO: Change this to an error popup somewhere else
                     chatbox.innerHTML += `<p>Raah rate limited again</p>`;
+                    messages.pop();
                     break;
                 default:
+                    console.error(data)
                     chatbox.innerHTML += `<p>Error: ${JSON.stringify(data)}</p>`;
+                    messages.pop();
                     break;
             }
-            messages.pop();
         }
     } catch (error) {
         chatbox.innerHTML += `<p>Network Error: ${error.message}</p>`;
@@ -78,11 +114,11 @@ function ClearChat() {
 function SaveChat() {
     const chatbox = document.getElementById("chatbox");
     const chatContent = chatbox.innerText;
-    SaveToTxt(chatContent,"chat");
+    SaveToTxt(chatContent, "chat");
 }
 
 function SaveToTxt(text, filename) {
-    const newFile = new Blob([text], {type:'text/plain'});
+    const newFile = new Blob([text], { type: 'text/plain' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(newFile);
     link.download = filename;
@@ -103,7 +139,7 @@ let heldKeys = [];
 function DoDomSetup() {
     const sendButton = document.getElementById("sendButton");
     sendButton.addEventListener("click", () => SendMessage());
-    
+
     const userInput = document.getElementById('userInput');
     userInput.addEventListener("keydown", (event) => {
         if (!heldKeys.includes(event.key)) {
