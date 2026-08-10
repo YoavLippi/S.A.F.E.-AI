@@ -8,9 +8,9 @@ const LimitType = Object.freeze({
 
 let tokensUsed = 0;
 const baseMessages = [
-    { role: "system", content: "Respond using GitHub-flavored Markdown. Never output HTML as a raw output." }
+    { role: "system", content: "Respond using Markdown. Never output HTML as a raw output." }
 ];
-let messages = baseMessages;
+let messages = [...baseMessages];
 
 const md = new MarkdownIt({
     html:false,
@@ -28,6 +28,7 @@ async function SendMessage() {
     //showing user message
     const userPara = document.createElement("p");
     userPara.classList.add("UserInput");
+    userPara.classList.add("chatMessage");
     userPara.textContent = `You: ${userText}`;
     chatbox.appendChild(userPara);
     inputField.value = "";
@@ -47,6 +48,8 @@ async function SendMessage() {
         inputField.disabled = true;
 
         messages.push({ role: "user", content: userText });
+        console.log("Sending message:");
+        console.log({...messages});
 
         //https://s-a-f-e-ai.onrender.com/api/chat
         //http://localhost:3000/api/chat
@@ -103,11 +106,14 @@ async function SendMessage() {
             const aiRes = data.choices[0].message.content;
             const resPara = document.createElement("p");
             resPara.classList.add("AIResponse");
+            resPara.classList.add("chatMessage");
 
             const renderedOutput = md.render(aiRes);
             resPara.innerHTML = `${data.model}: ${renderedOutput}`;
             chatbox.appendChild(resPara);
             messages.push({ role: "assistant", content: aiRes });
+            console.log("Receiving messages...");
+            console.log({...messages});
         } else {
             switch (res.status) {
                 case 429:
@@ -136,7 +142,9 @@ async function SendMessage() {
 function ClearChat() {
     const chatbox = document.getElementById("chatbox");
     chatbox.innerHTML = "";
-    messages = baseMessages;
+    messages = [...baseMessages];
+    console.log("clearing messages...");
+    console.log({...messages});
 }
 
 function SaveChat() {
