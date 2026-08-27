@@ -8,7 +8,7 @@ const LimitType = Object.freeze({
 
 let tokensUsed = 0;
 const baseMessages = [
-    { role: "system", content: "Respond using Markdown. Never output HTML as a raw output." }
+    /*{ role: "system", content: "Respond using Markdown. Never output HTML as a raw output." }*/
 ];
 let messages = [...baseMessages];
 
@@ -27,9 +27,9 @@ async function SendMessage() {
     if (!userText) return;
     //showing user message
     const userPara = document.createElement("p");
-    userPara.classList.add("UserInput");
+    userPara.classList.add("UserMessage");
     userPara.classList.add("chatMessage");
-    userPara.textContent = `You: ${userText}`;
+    userPara.textContent = `You: \n${userText}`;
     chatbox.appendChild(userPara);
     inputField.value = "";
 
@@ -45,6 +45,9 @@ async function SendMessage() {
         //disabling relevant input areas
         const sendButton = document.getElementById("sendButton");
         sendButton.disabled = true;
+        const clearButton = document.getElementById("clearButton");
+        clearButton.disabled = true;
+
         inputField.disabled = true;
 
         messages.push({ role: "user", content: userText });
@@ -105,7 +108,7 @@ async function SendMessage() {
         if (data.choices && data.choices[0]) {
             const aiRes = data.choices[0].message.content;
             const resPara = document.createElement("p");
-            resPara.classList.add("AIResponse");
+            resPara.classList.add("AIMessage");
             resPara.classList.add("chatMessage");
 
             const renderedOutput = md.render(aiRes);
@@ -135,6 +138,7 @@ async function SendMessage() {
     chatbox.scrollTop = chatbox.scrollHeight;
     sendButton.disabled = false;
     inputField.disabled = false;
+    clearButton.disabled = false;
 
     //console.log(messages);
 }

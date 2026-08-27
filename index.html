@@ -6,30 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script type="module">import "./scripts/chat-api.js";</script>
+    <script type="module">import "./scripts/interaction.js";</script>
+    <link rel="stylesheet" href="./styles/mainStyle.css">
     <title>Homepage</title>
 </head>
 
 <body>
-    <header>
-        <nav>
-            <!--nav injection-->
-        </nav>
-    </header>
+    <div class="content">
+        <header>
+            <nav>
+                <!--nav injection-->
+            </nav>
+        </header>
+        <div id="interactibleContent">
+            <button id="saveButton">Save Chat</button>
+            <div class="contentWindow gridItem" id="taskWindow"></div>
+            <div class="gridItem" id="resizeHandle"></div>
+            <div class="contentWindow gridItem" id="sessionWindow">
+                <div id="chatbox" style="white-space: pre-line;" class="flex-text">
+                    <!--This will be the chat response and user message-->
+                </div>
+                <div id="inputArea">
+                    <textarea id="userInput" placeholder="Write here..."></textarea>
+                    <button class="chatButton" id="sendButton">Send</button>
+                    <button class="chatButton" id="clearButton">Clear</button>
+                </div>
 
-    <div id="sessionWindow">
-        <div id="chatbox" style="white-space: pre-line;" class="flex-text">
-            <!--This will be the chat response and user message-->
+            </div>
         </div>
-        <textarea id="userInput" placeholder="Write here..."></textarea>
-        <button id="sendButton">Send</button>
-        <button id="clearButton">Clear</button>
-        <button id="saveButton">Save Chat</button>
+
+
+
+
+        <footer>
+            <!--injection-->
+        </footer>
     </div>
-
-
-    <footer>
-        <!--injection-->
-    </footer>
 </body>
 
 </html>

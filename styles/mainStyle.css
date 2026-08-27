@@ -1,0 +1,194 @@
+:root {
+    --page-margin: 3%;
+    --splitter-pos: 50px;
+    --dark-colour: rgb(22, 22, 30);
+    --neutral-color: rgb(32, 32, 43);
+    --semi-bright-color: rgb(52, 52, 60);
+    --text-colour: rgb(255, 250, 220);
+    --light-accent-color: rgb(76, 115, 163);
+    --accent-color: rgb(40, 48, 67);
+    --dark-accent-color: rgb(29, 36, 58);
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--dark-colour);
+    color: var(--text-colour);
+}
+
+button {
+    background-color: var(--accent-color);
+    border-style: solid;
+    color: var(--text-colour);
+    border-radius: 10%;
+}
+
+button:hover {
+    background-color: var(--dark-accent-color);
+}
+
+header {
+    height: 5vh;
+    height: 5dvh;
+    grid-area: header;
+}
+
+footer {
+    height: 5vh;
+    height: 5dvh;
+    grid-area: footer;
+}
+
+code {
+    text-wrap-mode: wrap;
+}
+
+
+.AIMessage {
+    align-self: flex-end;
+}
+
+.chatMessage {
+    margin-inline: 10%;
+    margin-block: 1rem;
+    background-color: var(--accent-color);
+    min-width: 35%;
+    max-width: 60%;
+    height: auto;
+    padding: 1rem;
+    border-radius: 10px;
+    border-color: var(--light-accent-color);
+    border-width: 1px;
+    border-style: solid;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: var(--page-margin) 1fr var(--page-margin);
+    grid-template-rows: auto 1fr auto;
+    /*gap: 20px;*/
+    height: 100vh;
+    height: 100dvh;
+
+    grid-template-areas:
+        "header header header"
+        "left-sb main right-sb"
+        "footer footer footer"
+    ;
+}
+
+.contentWindow {
+    background-color: var(--neutral-color);
+    border-width: 1px;
+    border-color: var(--semi-bright-color);
+    border-style: solid;
+    border-radius: 1rem;
+    scrollbar-color: rgb(77, 77, 77);
+}
+
+.gridItem {
+    position: relative;
+}
+
+.UserMessage {
+    align-self: flex-start;
+}
+
+#chatbox {
+    flex-grow: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#inputArea {
+    display: flex;
+    height: 5rem;
+    align-self: flex-end;
+    /*gap: 0.5rem;*/
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+#inputArea>* {
+    margin-block: 1.3rem;
+}
+
+#interactibleContent {
+    display: flex;
+    grid-area: main;
+    overflow: hidden;
+    position: relative;
+}
+
+#resizeHandle {
+    /*flex: 0 0 auto;
+    margin: 0 auto;*/
+    cursor: ew-resize;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    /*height: 100%;*/
+    background-color: rgb(0, 0, 0, 0);
+    /*left: var(--splitter-pos);*/
+    position: relative;
+    border-radius: 2px 2px 2px 2px;
+}
+
+#resizeHandle:hover {
+    background-color: rgb(42, 87, 135);
+}
+
+#resizeHandle:hover:after {
+    background-color: rgb(105, 165, 228);
+}
+
+#resizeHandle:after {
+    background-color: rgb(77, 77, 77);
+    border-radius: 2px;
+    content: "";
+    height: 20px;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%
+}
+
+#saveButton {
+    border-radius: 1rem;
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    padding: 0.4rem;
+    margin: 0.5rem;
+}
+
+#sessionWindow {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center*/
+    ;
+    align-items: center;
+}
+
+#taskWindow {
+    /*flex: 1 1 0;*/
+    width: var(--splitter-pos);
+}
+
+#userInput {
+    resize: none;
+    overflow-y: auto;
+    flex: 0.9;
+    min-height: 2lh;
+    max-height: 14lh;
+    height: 1lh;
+    align-self: flex-end;
+    word-wrap: break-word;
+}
