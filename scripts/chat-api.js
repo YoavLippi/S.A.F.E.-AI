@@ -189,6 +189,7 @@ function DoDomSetup() {
         if (event.key == 'Enter') {
             if (!heldKeys.includes('Shift')) {
                 SendMessage();
+                userInput.style.height = 'auto';
                 userInput.blur();
             }
         }

@@ -62,6 +62,10 @@ code {
     border-color: var(--light-accent-color);
     border-width: 1px;
     border-style: solid;
+    word-wrap: break-word;
+    text-wrap-mode: wrap;
+    overflow-wrap: break-word;
+    word-break: break-all;
 }
 
 .content {
