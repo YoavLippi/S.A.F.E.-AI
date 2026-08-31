@@ -1,3 +1,30 @@
+async function injectTask(filepath) {
+    const taskHolder = document.getElementById("taskHolder");
+    fetch(filepath)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.text();
+    })
+    .then(text=> {
+        taskHolder.innerHTML = text;
+    })
+    .then(addSpoilers)
+    .catch(error => {
+        console.error('Error fetching the text file: ', error);
+    });
+}
+
+function addSpoilers() {
+    const spoilerTexts = document.getElementsByClassName("spoilerText");
+    for (let i=0;i<spoilerTexts.length;i++) {
+        spoilerTexts[i].addEventListener("click", () => {
+            spoilerTexts[i].classList.toggle("spoilerRevealed");
+        });
+    }
+}
+
 if (document.readyState == "loading") {
     document.addEventListener("DOMContentLoaded", ()=>DoDomSetup());
 } else {
@@ -67,4 +94,6 @@ function DoDomSetup() {
         //console.log(totalLines)
         userTextArea.style.height = `${totalLines}lh`;
     });
+
+    injectTask("./assets/jailbreakdowns/p_injection.txt");
 }

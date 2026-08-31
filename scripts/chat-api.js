@@ -32,6 +32,7 @@ async function SendMessage() {
     userPara.textContent = `You: \n${userText}`;
     chatbox.appendChild(userPara);
     inputField.value = "";
+    userInput.style.height = 'auto';
 
     try {
         const thinkPara = document.createElement('p');
@@ -154,7 +155,9 @@ function ClearChat() {
 function SaveChat() {
     const chatbox = document.getElementById("chatbox");
     const chatContent = chatbox.innerText;
-    SaveToTxt(chatContent, "chat");
+    let now = new Date();
+    let fileDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+    SaveToTxt(chatContent, `chat_${fileDate}_${now.toLocaleTimeString()}`);
 }
 
 function SaveToTxt(text, filename) {
@@ -189,7 +192,6 @@ function DoDomSetup() {
         if (event.key == 'Enter') {
             if (!heldKeys.includes('Shift')) {
                 SendMessage();
-                userInput.style.height = 'auto';
                 userInput.blur();
             }
         }

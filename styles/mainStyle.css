@@ -4,6 +4,7 @@
     --dark-colour: rgb(22, 22, 30);
     --neutral-color: rgb(32, 32, 43);
     --semi-bright-color: rgb(52, 52, 60);
+    --bright-color:rgb(103, 103, 124);
     --text-colour: rgb(255, 250, 220);
     --light-accent-color: rgb(76, 115, 163);
     --accent-color: rgb(40, 48, 67);
@@ -23,6 +24,7 @@ button {
     border-style: solid;
     color: var(--text-colour);
     border-radius: 10%;
+    border-color: var(--bright-color);
 }
 
 button:hover {
@@ -45,13 +47,26 @@ code {
     text-wrap-mode: wrap;
 }
 
+textarea {
+    background-color: var(--dark-accent-color);
+    color: var(--text-colour);
+    border-style: solid;
+    border-radius: 10px;
+    padding-inline: 10px;
+    border-color: var(--bright-color);
+}
+
+textarea:focus {
+    border-color: var(--semi-bright-color);
+}
+
 
 .AIMessage {
-    align-self: flex-end;
+    align-self: flex-start;
 }
 
 .chatMessage {
-    margin-inline: 10%;
+    margin-inline: 2%;
     margin-block: 1rem;
     background-color: var(--accent-color);
     min-width: 35%;
@@ -88,14 +103,34 @@ code {
     border-style: solid;
     border-radius: 1rem;
     scrollbar-color: rgb(77, 77, 77);
+    padding: 10px;
 }
 
 .gridItem {
     position: relative;
 }
 
+.spoilerText {
+    cursor: pointer;
+    background-color: var(--dark-accent-color);
+    border-radius: 3px;
+    user-select: none;
+    color: rgb(0, 0, 0, 0);
+}
+
+.spoilerText.spoilerRevealed {
+    color: var(--text-colour);
+    /*user-select: auto;*/
+}
+
+.task {
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-color: rgb(77, 77, 77);
+}
+
 .UserMessage {
-    align-self: flex-start;
+    align-self: flex-end;
 }
 
 #chatbox {
