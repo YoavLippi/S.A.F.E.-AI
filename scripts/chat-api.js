@@ -26,10 +26,12 @@ async function SendMessage() {
 
     if (!userText) return;
     //showing user message
-    const userPara = document.createElement("p");
+    const userPara = document.createElement("div");
     userPara.classList.add("UserMessage");
     userPara.classList.add("chatMessage");
-    userPara.textContent = `You: \n${userText}`;
+    const userInputText = document.createElement('p');
+    userInputText.textContent = `You: \n${userText}`;
+    userPara.appendChild(userInputText);
     chatbox.appendChild(userPara);
     inputField.value = "";
     userInput.style.height = 'auto';
@@ -107,15 +109,28 @@ async function SendMessage() {
         chatbox.removeChild(thinkPara);
 
         if (data.choices && data.choices[0]) {
+            //adding a summary thing so that we can see the reasoning as well
+            const aiReasoning = data.choices[0].message.reasoning;
+            //console.log(aiReasoning);
+            let reasoningPara = document.createElement("p");
+
+
+
             const aiRes = data.choices[0].message.content;
-            const resPara = document.createElement("p");
-            resPara.classList.add("AIMessage");
-            resPara.classList.add("chatMessage");
+            const AIResDiv = document.createElement("div");
+
+            AIResDiv.classList.add("AIMessage");
+            AIResDiv.classList.add("chatMessage");
 
             const renderedOutput = md.render(aiRes);
-            resPara.innerHTML = `${data.model}: ${renderedOutput}`;
-            chatbox.appendChild(resPara);
+            const AIPara = document.createElement('p');
+            AIPara.innerHTML = `${data.model}: ${renderedOutput}`;
+
+            AIResDiv.appendChild(AIPara);
+            chatbox.appendChild(AIResDiv);
+
             messages.push({ role: "assistant", content: aiRes });
+
             console.log("Receiving messages...");
             console.log({...messages});
         } else {
