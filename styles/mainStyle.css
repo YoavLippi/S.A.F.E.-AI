@@ -120,7 +120,7 @@ textarea:focus {
 
 .spoilerText.spoilerRevealed {
     color: var(--text-colour);
-    /*user-select: auto;*/
+    user-select: auto;
 }
 
 .task {

@@ -109,23 +109,28 @@ async function SendMessage() {
         chatbox.removeChild(thinkPara);
 
         if (data.choices && data.choices[0]) {
-            //adding a summary thing so that we can see the reasoning as well
-            const aiReasoning = data.choices[0].message.reasoning;
-            //console.log(aiReasoning);
-            let reasoningPara = document.createElement("p");
-
-
-
-            const aiRes = data.choices[0].message.content;
             const AIResDiv = document.createElement("div");
 
             AIResDiv.classList.add("AIMessage");
             AIResDiv.classList.add("chatMessage");
 
+            //adding a summary thing so that we can see the reasoning as well
+            const aiReasoning = data.choices[0].message.reasoning;
+            //console.log(aiReasoning);
+            let reasoningPara = document.createElement("p");
+            reasoningPara.innerText = aiReasoning;
+            const summaryBox = document.createElement('details');
+            const thinkingText = document.createElement('summary');
+            thinkingText.innerText = "Show reasoning";
+            summaryBox.appendChild(thinkingText);
+            summaryBox.appendChild(reasoningPara);
+
+            const aiRes = data.choices[0].message.content;
             const renderedOutput = md.render(aiRes);
             const AIPara = document.createElement('p');
             AIPara.innerHTML = `${data.model}: ${renderedOutput}`;
 
+            AIResDiv.appendChild(summaryBox);
             AIResDiv.appendChild(AIPara);
             chatbox.appendChild(AIResDiv);
 
