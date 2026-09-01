@@ -20,6 +20,10 @@ body {
     color: var(--text-colour);
 }
 
+a {
+    color: var(--light-accent-color);
+}
+
 button {
     background-color: var(--accent-color);
     border-style: solid;

@@ -115,5 +115,5 @@ function DoDomSetup() {
         //console.log(enc.encode(userTextArea.value).length);
     });
 
-    injectTask("./assets/jailbreakdowns/p_injection.txt");
+    injectTask("./assets/jailbreakdowns/p_injection.html");
 }
