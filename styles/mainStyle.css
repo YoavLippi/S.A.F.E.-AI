@@ -65,6 +65,10 @@ textarea:focus {
     border-color: var(--semi-bright-color);
 }
 
+summary {
+    cursor: pointer;
+}
+
 
 .AIMessage {
     align-self: flex-start;
