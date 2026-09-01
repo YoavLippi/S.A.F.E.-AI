@@ -1,3 +1,12 @@
+import {getEncoding} from "https://esm.run/js-tiktoken";
+import { countGroqTokensForMessage } from "./chat-api.js";
+//import o200k_base from "js-tiktoken/lite";
+//both oss and gpt-4 use the same encoding
+const enc = getEncoding('o200k_base');
+let currentTokens = 0;
+const maxTokens = 4000;
+let running_textVal = "";
+
 async function injectTask(filepath) {
     const taskHolder = document.getElementById("taskHolder");
     fetch(filepath)
@@ -72,9 +81,16 @@ function DoDomSetup() {
     });
 
     const userTextArea = document.getElementById("userInput");
+    const style = window.getComputedStyle(userTextArea);
     userTextArea.addEventListener("input", () => {
-        const style = window.getComputedStyle(userTextArea);
+        let tokenCount = enc.encode(userTextArea.value).length+75;
+        if (tokenCount>maxTokens) {
+            userTextArea.value = running_textVal;
+        } else {
+            running_textVal = userTextArea.value;
+        }
         userTextArea.style.height = 'auto';
+        //console.log(lineHeight);
         let lineHeight = 0;
 
         if (style.lineHeight === "normal") {
@@ -82,7 +98,6 @@ function DoDomSetup() {
         } else {
             lineHeight = parseFloat(style.lineHeight);
         }
-        //console.log(lineHeight);
 
         const paddingTop = parseFloat(style.paddingTop);
         const paddingBottom = parseFloat(style.paddingBottom);
@@ -93,6 +108,11 @@ function DoDomSetup() {
         const totalLines = Math.round(textHeight/(lineHeight*13));
         //console.log(totalLines)
         userTextArea.style.height = `${totalLines}lh`;
+
+        //root.style.setProperty('--text-input-tokens',`${enc.encode(userTextArea.value).length}`);
+        //document.getElementsByClassName("Tester")[0].dataset.text = `${enc.encode(userTextArea.value).length}`;
+        document.getElementById("inputArea").dataset.text = `${tokenCount}`;
+        //console.log(enc.encode(userTextArea.value).length);
     });
 
     injectTask("./assets/jailbreakdowns/p_injection.txt");

@@ -1,10 +1,15 @@
 import MarkdownIt from "https://esm.run/markdown-it";
+import {getEncoding} from "https://esm.run/js-tiktoken";
+//import o200k_base from "js-tiktoken/lite";
+//both oss and gpt-4 use the same encoding
+const enc = getEncoding('o200k_base');
 
 const LimitType = Object.freeze({
     UNKNOWN: "UNKNOWN",
     DAILY: "DAILY",
     BURST: "BURST"
 });
+
 
 let tokensUsed = 0;
 const baseMessages = [
@@ -19,6 +24,29 @@ const md = new MarkdownIt({
     typographer:true
 });
 
+function countGroqTokens(messages) {
+    //context wrapper
+    let total_tokens = 71;
+    messages.forEach(element => {
+        total_tokens +=4;
+        for (const [key, value] of Object.entries(element)) {
+            // Encode the string to a Uint32Array and get its length
+            const tokens = enc.encode(value);
+            total_tokens += tokens.length;
+        }
+    });
+    //total_tokens += 2;
+    return total_tokens;
+}
+
+export function countGroqTokensForMessage(message) {
+    //context wrapper
+    let total_tokens = 75;
+    const tokens = enc.encode(message);
+    total_tokens += tokens.length;
+    return total_tokens;
+}
+
 async function SendMessage() {
     const inputField = document.getElementById("userInput");
     const chatbox = document.getElementById("chatbox");
@@ -29,12 +57,13 @@ async function SendMessage() {
     const userPara = document.createElement("div");
     userPara.classList.add("UserMessage");
     userPara.classList.add("chatMessage");
+
     const userInputText = document.createElement('p');
     userInputText.textContent = `You: \n${userText}`;
     userPara.appendChild(userInputText);
     chatbox.appendChild(userPara);
     inputField.value = "";
-    userInput.style.height = 'auto';
+    inputField.dispatchEvent(new Event('input'));
 
     try {
         const thinkPara = document.createElement('p');
@@ -52,8 +81,19 @@ async function SendMessage() {
         clearButton.disabled = true;
 
         inputField.disabled = true;
-
         messages.push({ role: "user", content: userText });
+
+        //message rollover stuff so the tokens per minute aren't overflowed
+        //our prompt tokens are everything in the current messages array
+        //It's not exact, but it's close enough
+        console.log(countGroqTokens(messages));
+        const promptTokenLimit = 4000;
+        while (countGroqTokens(messages) > promptTokenLimit) {
+            messages.shift();
+            console.log("Too many prompt tokens, removing earliest message");
+            //console.log(...messages);
+        }
+
         console.log("Sending message:");
         console.log({...messages});
 
@@ -88,6 +128,7 @@ async function SendMessage() {
                             body: JSON.stringify({
                                 messages: messages,
                                 useFallback: true,
+                                max_completion_tokens: 8000-countGroqTokens(messages),
                             }),
                         });
                     }

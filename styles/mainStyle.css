@@ -9,6 +9,7 @@
     --light-accent-color: rgb(76, 115, 163);
     --accent-color: rgb(40, 48, 67);
     --dark-accent-color: rgb(29, 36, 58);
+    --max-input-tokens: '4000';
 }
 
 html,
@@ -228,4 +229,8 @@ textarea:focus {
     height: 1lh;
     align-self: flex-end;
     word-wrap: break-word;
+}
+
+#inputArea::after {
+    content: attr(data-text) "/" var(--max-input-tokens);
 }
