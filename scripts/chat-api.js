@@ -48,7 +48,7 @@ export function countGroqTokensForMessage(message) {
     return total_tokens;
 }
 
-async function DisplayPopup(content) {
+async function DisplayPopup(content, displayTime = 650) {
     //assuming the content is a string, this lets us access the methods with intellisense thank god
     let cString = String(content);
     const popupWindow = document.createElement("dialog");
@@ -59,7 +59,7 @@ async function DisplayPopup(content) {
     const contentWindow = document.getElementsByClassName("content")[0];
     contentWindow.appendChild(popupWindow);
     popupWindow.show();
-    await delay(650);
+    await delay(displayTime);
     contentWindow.removeChild(popupWindow);
 }
 
