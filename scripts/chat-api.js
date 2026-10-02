@@ -10,6 +10,7 @@ const LimitType = Object.freeze({
     BURST: "BURST"
 });
 
+const delay = ms => new Promise(resolve => setTimeout(resolve,ms));
 
 let tokensUsed = 0;
 const baseMessages = [
@@ -47,6 +48,21 @@ export function countGroqTokensForMessage(message) {
     return total_tokens;
 }
 
+async function DisplayPopup(content) {
+    //assuming the content is a string, this lets us access the methods with intellisense thank god
+    let cString = String(content);
+    const popupWindow = document.createElement("dialog");
+    const popupPara = document.createElement("P");
+    popupPara.innerText = cString;
+    popupWindow.appendChild(popupPara);
+
+    const contentWindow = document.getElementsByClassName("content")[0];
+    contentWindow.appendChild(popupWindow);
+    popupWindow.show();
+    await delay(650);
+    contentWindow.removeChild(popupWindow);
+}
+
 async function SendMessage() {
     const inputField = document.getElementById("userInput");
     const chatbox = document.getElementById("chatbox");
@@ -64,6 +80,7 @@ async function SendMessage() {
     chatbox.appendChild(userPara);
     inputField.value = "";
     inputField.dispatchEvent(new Event('input'));
+    chatbox.scrollTop = chatbox.scrollHeight;
 
     try {
         const thinkPara = document.createElement('p');
@@ -117,8 +134,9 @@ async function SendMessage() {
             switch (res.status) {
                 case 429:
                     console.warn(`rate limited by: ${errorData.type}`);
+
                     //TODO: Change this to an error popup somewhere else
-                    chatbox.innerHTML += `<p>Raah rate limited again</p>`;
+                    DisplayPopup("Rate Limited - Trying Fallback Model");
 
                     if (errorData.type && (errorData.type == LimitType.DAILY || errorData.type == LimitType.BURST)) {
                         //fallback now
@@ -134,6 +152,7 @@ async function SendMessage() {
                             }),
                         });
 
+                        //if the fallback also doesn't work, we'll just throw the error forward
                         if (!res.ok) {
                             errorData = await res.json;
                             throw new Error(JSON.stringify(errorData));
@@ -189,18 +208,18 @@ async function SendMessage() {
             switch (res.status) {
                 case 429:
                     //TODO: Change this to an error popup somewhere else
-                    chatbox.innerHTML += `<p>Raah rate limited again</p>`;
+                    DisplayPopup(`Raah rate limited again`);
                     messages.pop();
                     break;
                 default:
                     console.error(data)
-                    chatbox.innerHTML += `<p>Error: ${JSON.stringify(data)}</p>`;
+                    DisplayPopup(`Error: ${JSON.stringify(data)}`);
                     messages.pop();
                     break;
             }
         }
     } catch (error) {
-        chatbox.innerHTML += `<p>Network Error: ${error.message}</p>`;
+        DisplayPopup(`Error: ${error.message}`);
     }
 
     chatbox.scrollTop = chatbox.scrollHeight;
@@ -215,8 +234,9 @@ function ClearChat() {
     const chatbox = document.getElementById("chatbox");
     chatbox.innerHTML = "";
     messages = [...baseMessages];
-    console.log("clearing messages...");
-    console.log({...messages});
+    //console.log("clearing messages...");
+    //console.log({...messages});
+    DisplayPopup("cleared messages");
 }
 
 function SaveChat() {

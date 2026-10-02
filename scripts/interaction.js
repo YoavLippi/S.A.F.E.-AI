@@ -7,6 +7,13 @@ let currentTokens = 0;
 const maxTokens = 4000;
 let running_textVal = "";
 
+//to not overcomplicate things, I will just make an array of task names. It's not best practice, but it's low-complexity
+const breakdowns = [
+    {text: "Home", path:"home.html", b_ID: "btnHome"},
+    {text: "Prompt Injection", path:"p_injection.html", b_ID:"btnPI"},
+    {text: "Adversarial Poetry", path:"adv_poetry.html", b_ID:"btnAP"},
+];
+
 async function injectTask(filepath) {
     const taskHolder = document.getElementById("taskHolder");
     fetch(filepath)
@@ -115,5 +122,19 @@ function DoDomSetup() {
         //console.log(enc.encode(userTextArea.value).length);
     });
 
-    injectTask("./assets/jailbreakdowns/p_injection.html");
+    const nav = document.querySelector('nav');
+    //we need to bind each filepath we have to a new button that we create on setup
+    for (let i=0;i<breakdowns.length;i++) {
+        let temp = document.createElement("button");
+        temp.innerText = breakdowns[i].text;
+        temp.id = breakdowns[i].b_ID;
+        temp.addEventListener("pointerdown", () => {
+            injectTask(`./assets/jailbreakdowns/${breakdowns[i].path}`);
+        })
+        nav.appendChild(temp);
+    }
+    //home should be open by default
+    if (breakdowns.length>0) {
+        injectTask(`./assets/jailbreakdowns/${breakdowns[0].path}`)
+    }
 }
