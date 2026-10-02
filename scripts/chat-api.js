@@ -86,16 +86,16 @@ async function SendMessage() {
         //message rollover stuff so the tokens per minute aren't overflowed
         //our prompt tokens are everything in the current messages array
         //It's not exact, but it's close enough
-        console.log(countGroqTokens(messages));
+        //console.log(countGroqTokens(messages));
         const promptTokenLimit = 4000;
         while (countGroqTokens(messages) > promptTokenLimit) {
             messages.shift();
-            console.log("Too many prompt tokens, removing earliest message");
+            //console.log("Too many prompt tokens, removing earliest message");
             //console.log(...messages);
         }
 
-        console.log("Sending message:");
-        console.log({...messages});
+        //console.log("Sending message:");
+        //console.log({...messages});
 
         //https://s-a-f-e-ai.onrender.com/api/chat
         //http://localhost:3000/api/chat
@@ -107,10 +107,11 @@ async function SendMessage() {
             body: JSON.stringify({
                 messages: messages,
                 useFallback: false,
+                max_completion_tokens: 8000-countGroqTokens(messages),
             }),
         });
 
-        if (!res.ok) {
+        if (!res.ok || res.error) {
             const errorData = await res.json();
             switch (res.status) {
                 case 429:
@@ -118,7 +119,7 @@ async function SendMessage() {
                     //TODO: Change this to an error popup somewhere else
                     chatbox.innerHTML += `<p>Raah rate limited again</p>`;
 
-                    if (errorData.type && errorData.type == LimitType.DAILY) {
+                    if (errorData.type && (errorData.type == LimitType.DAILY || errorData.type == LimitType.BURST)) {
                         //fallback now
                         res = await fetch("https://s-a-f-e-ai.onrender.com/api/chat", {
                             method: 'POST',
@@ -139,14 +140,15 @@ async function SendMessage() {
                     messages.pop();
                     break;
             }
+            throw new Error("Groq API stuff");
         }
 
         const data = await res.json();
 
         console.log(data);
 
-        tokensUsed += data.usage.total_tokens;
-        console.log(tokensUsed);
+        //tokensUsed += data.usage.total_tokens;
+        //console.log(tokensUsed);
         chatbox.removeChild(thinkPara);
 
         if (data.choices && data.choices[0]) {

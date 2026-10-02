@@ -65,8 +65,16 @@ textarea:focus {
     border-color: var(--semi-bright-color);
 }
 
+details {
+    font-style: oblique;
+}
+
 summary {
     cursor: pointer;
+}
+
+details>summary {
+    font-weight: bold;
 }
 
 

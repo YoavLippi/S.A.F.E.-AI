@@ -35,6 +35,7 @@ app.post('/api/chat', async (req, res) => {
             }),
         });
 
+        console.log("Response was:", response.status);
         switch (response.status) {
             case 429:
                 const errorData = await response.json();
@@ -48,7 +49,7 @@ app.post('/api/chat', async (req, res) => {
                     limitType = LimitType.DAILY;
                     action = "Daily tokens exceeded. They will reset at midnight UTC.";
                 } else if (errorMessage.includes("per minute")||errorMessage.includes("TPM")||errorMessage.includes("RPM")) {
-                    limitType = LimitType.UNKNOWN;
+                    limitType = LimitType.BURST;
                     action = `Too many requests. Please retry after ${retryAfterHeader ? retryAfterHeader : `a few`} seconds`;
                 }
                 return res.status(429).json({
@@ -58,7 +59,6 @@ app.post('/api/chat', async (req, res) => {
                     retryAfterSeconds: retryAfterHeader ? parseFloat(retryAfterHeader) : null,
                     suggestion: action,
                 });
-                break;
         }
         const data = await response.json();
         //console.log("Api Raw Response", data);
