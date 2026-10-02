@@ -21,7 +21,7 @@ app.post('/api/chat', async (req, res) => {
     try {
         const messages = req.body.messages;
         const useFallback = req.body.useFallback;
-        console.log(useFallback);
+        //console.log(useFallback);
 
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: 'POST',
@@ -35,7 +35,7 @@ app.post('/api/chat', async (req, res) => {
             }),
         });
 
-        console.log("Response was:", response.status);
+        //console.log("Response was:", response.status);
         switch (response.status) {
             case 429:
                 const errorData = await response.json();

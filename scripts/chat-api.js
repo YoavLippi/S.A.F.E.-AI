@@ -67,6 +67,7 @@ async function SendMessage() {
 
     try {
         const thinkPara = document.createElement('p');
+        thinkPara.id = "thinkpara";
         thinkPara.innerText = 'Thinking...';
 
         //let thinkText = `Thinking...\n`;
@@ -112,7 +113,7 @@ async function SendMessage() {
         });
 
         if (!res.ok || res.error) {
-            const errorData = await res.json();
+            let errorData = await res.json();
             switch (res.status) {
                 case 429:
                     console.warn(`rate limited by: ${errorData.type}`);
@@ -132,15 +133,18 @@ async function SendMessage() {
                                 max_completion_tokens: 8000-countGroqTokens(messages),
                             }),
                         });
+
+                        if (!res.ok) {
+                            errorData = await res.json;
+                            throw new Error(JSON.stringify(errorData));
+                        }
                     }
                     break;
                 default:
                     console.error(errorData)
-                    chatbox.innerHTML += `<p>Error: ${JSON.stringify(data)}</p>`;
                     messages.pop();
-                    break;
+                    throw new Error(`Error: ${JSON.stringify(data)}`);
             }
-            throw new Error("Groq API stuff");
         }
 
         const data = await res.json();
@@ -149,7 +153,7 @@ async function SendMessage() {
 
         //tokensUsed += data.usage.total_tokens;
         //console.log(tokensUsed);
-        chatbox.removeChild(thinkPara);
+        chatbox.removeChild(document.getElementById("thinkpara"));
 
         if (data.choices && data.choices[0]) {
             const AIResDiv = document.createElement("div");
