@@ -56,11 +56,17 @@ async function DisplayPopup(content, displayTime = 650) {
     popupPara.innerText = cString;
     popupWindow.appendChild(popupPara);
 
-    const contentWindow = document.getElementsByClassName("content")[0];
-    contentWindow.appendChild(popupWindow);
+    const popupHolder = document.getElementById("popupHolder");
+    popupHolder.appendChild(popupWindow);
     popupWindow.show();
-    await delay(displayTime);
-    contentWindow.removeChild(popupWindow);
+    popupWindow.style.opacity = 1;
+    if (displayTime >0 ) {
+        await delay(displayTime);
+        popupWindow.style.opacity = 0;
+        await delay(200);
+        popupWindow.close();
+        popupHolder.removeChild(popupWindow);
+    }
 }
 
 async function SendMessage() {
@@ -236,7 +242,7 @@ function ClearChat() {
     messages = [...baseMessages];
     //console.log("clearing messages...");
     //console.log({...messages});
-    DisplayPopup("cleared messages");
+    DisplayPopup("Cleared Messages", 600);
 }
 
 function SaveChat() {
