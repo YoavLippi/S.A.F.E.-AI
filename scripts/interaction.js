@@ -12,6 +12,7 @@ const breakdowns = [
     {text: "Home", path:"home.html", b_ID: "btnHome"},
     {text: "Prompt Injection", path:"p_injection.html", b_ID:"btnPI"},
     {text: "Adversarial Poetry", path:"adv_poetry.html", b_ID:"btnAP"},
+    {text: "Privilege Escalation", path:"priv_escalation.html", b_ID:"btnPE"}
 ];
 
 async function injectTask(filepath) {

@@ -241,7 +241,7 @@ nav>* {
     pointer-events: none;
     position: absolute;
     right: 1vw;
-    bottom: 2vh;
+    bottom: 10vh;
     height: 40vh;
     width: 10vw;
     display: flex;

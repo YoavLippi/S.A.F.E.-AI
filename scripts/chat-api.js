@@ -254,10 +254,10 @@ function SaveChat() {
 }
 
 function SaveToTxt(text, filename) {
-    const newFile = new Blob([text], { type: 'text/plain' });
+    const newFile = new Blob([`${text}`], { type: 'text/plain' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(newFile);
-    link.download = filename;
+    link.download = `${filename}.txt`;
 
     document.body.appendChild(link);
     link.click();
