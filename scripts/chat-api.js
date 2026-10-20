@@ -250,7 +250,8 @@ function SaveChat() {
     const chatContent = chatbox.innerText;
     let now = new Date();
     let fileDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
-    SaveToTxt(chatContent, `chat_${fileDate}_${now.toLocaleTimeString()}`);
+    let fileTime = `${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
+    SaveToTxt(chatContent, `chat at ${fileTime} on ${fileDate}`);
 }
 
 function SaveToTxt(text, filename) {
