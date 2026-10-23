@@ -48,7 +48,8 @@ export function countGroqTokensForMessage(message) {
     return total_tokens;
 }
 
-async function DisplayPopup(content, displayTime = 650) {
+//should now default to one second
+async function DisplayPopup(content, displayTime = 1000) {
     //assuming the content is a string, this lets us access the methods with intellisense thank god
     let cString = String(content);
     const popupWindow = document.createElement("dialog");
@@ -63,6 +64,7 @@ async function DisplayPopup(content, displayTime = 650) {
     if (displayTime >0 ) {
         await delay(displayTime);
         popupWindow.style.opacity = 0;
+        //allowance for css fade out
         await delay(200);
         popupWindow.close();
         popupHolder.removeChild(popupWindow);
@@ -139,7 +141,7 @@ async function SendMessage() {
             let errorData = await res.json();
             switch (res.status) {
                 case 429:
-                    console.warn(`rate limited by: ${errorData.type}`);
+                    //console.warn(`rate limited by: ${errorData.type}`);
 
                     //TODO: Change this to an error popup somewhere else
                     DisplayPopup("Rate Limited - Trying Fallback Model");
@@ -166,7 +168,7 @@ async function SendMessage() {
                     }
                     break;
                 default:
-                    console.error(errorData)
+                    //console.error(errorData)
                     messages.pop();
                     throw new Error(`Error: ${JSON.stringify(data)}`);
             }
@@ -174,7 +176,7 @@ async function SendMessage() {
 
         const data = await res.json();
 
-        console.log(data);
+        //console.log(data);
 
         //tokensUsed += data.usage.total_tokens;
         //console.log(tokensUsed);
@@ -208,8 +210,8 @@ async function SendMessage() {
 
             messages.push({ role: "assistant", content: aiRes });
 
-            console.log("Receiving messages...");
-            console.log({...messages});
+            //console.log("Receiving messages...");
+            //console.log({...messages});
         } else {
             switch (res.status) {
                 case 429:
@@ -218,7 +220,7 @@ async function SendMessage() {
                     messages.pop();
                     break;
                 default:
-                    console.error(data)
+                    //console.error(data)
                     DisplayPopup(`Error: ${JSON.stringify(data)}`);
                     messages.pop();
                     break;
