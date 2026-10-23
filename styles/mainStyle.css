@@ -39,9 +39,10 @@ button:hover {
 }
 
 header {
-    height: 5vh;
-    height: 5dvh;
+    height: 7dvh;
     grid-area: header;
+    display: grid;
+    place-items: center;
 }
 
 footer {
@@ -231,7 +232,7 @@ details>summary {
 
 nav {
     display: flex;
-    height: 3rem;
+    height: 80%;
     width: 90%;
     padding:0px;
     gap: 0.25rem;
@@ -312,6 +313,10 @@ nav>* {
     display:flex;
     flex-direction: column;
     align-items: center;
+}
+
+#taskHolder {
+    overflow-y: scroll;
 }
 
 #userInput {
