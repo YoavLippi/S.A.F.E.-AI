@@ -139,4 +139,19 @@ function DoDomSetup() {
     if (breakdowns.length>0) {
         injectTask(`./assets/jailbreakdowns/${breakdowns[0].path}`)
     }
+
+    const footer = document.querySelector('footer');
+    fetch("./assets/footer/disclaimer.html")
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.text();
+    })
+    .then(text=> {
+        footer.innerHTML = text;
+    })
+    .catch(error => {
+        console.error('Error fetching the text file: ', error);
+    });
 }

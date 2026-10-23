@@ -18,6 +18,7 @@ body {
     padding: 0;
     background-color: var(--dark-colour);
     color: var(--text-colour);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 a {
@@ -113,6 +114,10 @@ textarea:focus {
 
 details {
     font-style: oblique;
+}
+
+footer>p {
+    text-align: center;
 }
 
 summary {
